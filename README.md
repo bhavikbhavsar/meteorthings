@@ -1,5 +1,5 @@
-MeteorChat
-==========
+Meteorthings
+============
 
 Simple chat application with different chat-rooms built on the [Meteor](http://www.meteor.com/) JavaScript Platform.
 
@@ -10,6 +10,6 @@ Used add-on packages (for convenience only!):
 * `bootstrap` for beautifying the UI
 * `accounts-password` and `accounts-ui` for having the user authenticated right out of the box
 
-Application is deployed at <http://chat.n-k.de>
+Application is deployed at <http://meteorthings.meteor.com>
 
 Feel free to fork/copy/whatever...

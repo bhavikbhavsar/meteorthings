@@ -1,6 +1,9 @@
 Messages = new Meteor.Collection("messages");
 Rooms = new Meteor.Collection("rooms");
 
+Leds = new Array("led1", "led2", "led3", "led4");
+Cmds = new Array("on", "off", "status");
+
 if (Meteor.isClient) {
   Accounts.ui.config({
     passwordSignupFields: 'USERNAME_ONLY'
@@ -8,7 +11,7 @@ if (Meteor.isClient) {
 
   Meteor.subscribe("rooms");
   Meteor.subscribe("messages");
-  Session.setDefault("roomname", "Meteor");
+  Session.setDefault("roomname", "Kelantan");
 
   Template.input.events({
     'click .sendMsg': function(e) {
@@ -21,9 +24,37 @@ if (Meteor.isClient) {
     }
   });
 
+	
   _sendMessage = function() {
     var el = document.getElementById("msg");
     Messages.insert({user: Meteor.user().username, msg: el.value, ts: new Date(), room: Session.get("roomname")});
+		
+		var command = el.value.split(" ");
+		
+		if (command.length == 2) {			
+			if (Leds.indexOf(command[0].toLowerCase()) == -1) {
+				Messages.insert({user: "IOT", msg: "Wrong device", ts: new Date(), room: Session.get("roomname")});						
+			} else if (Cmds.indexOf(command[1].toLowerCase()) == -1) {
+				Messages.insert({user: "IOT", msg: "Wrong command", ts: new Date(), room: Session.get("roomname")});									
+			} else {
+				
+				HTTP.post( 'http://jsonplaceholder.typicode.com/posts', { data: { "device": command[0], "command": command[1]} }, function(error, response) {
+					if ( error ) {
+						console.log( error );
+					} else {
+						console.log( response );
+
+						if (command[1].toLowerCase() == "status") {
+							Messages.insert({user: "IOT", msg: response.content, ts: new Date(), room: Session.get("roomname")});			
+						}
+			
+					}
+				} );
+				
+			}
+		} else {
+				Messages.insert({user: "IOT", msg: "Wrong format", ts: new Date(), room: Session.get("roomname")});									
+		}
     el.value = "";
     el.focus();
   };
@@ -73,7 +104,7 @@ if (Meteor.isServer) {
     Messages.remove({});
     Rooms.remove({});
     if (Rooms.find().count() === 0) {
-      ["Meteor", "JavaScript", "Reactive", "MongoDB"].forEach(function(r) {
+      ["Kelantan", "Perak", "Selangor", "Sarawak", "Sabah"].forEach(function(r) {
         Rooms.insert({roomname: r});
       });
     }
