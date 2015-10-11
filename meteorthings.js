@@ -3,6 +3,7 @@ Rooms = new Meteor.Collection("rooms");
 
 Leds = new Array("led1", "led2", "led3", "led4");
 Cmds = new Array("on", "off", "status");
+Greeting = new Array("morning", "afternoon", "evening");
 
 if (Meteor.isClient) {
   Accounts.ui.config({
@@ -32,26 +33,37 @@ if (Meteor.isClient) {
 		var command = el.value.split(" ");
 		
 		if (command.length == 2) {			
-			if (Leds.indexOf(command[0].toLowerCase()) == -1) {
-				Messages.insert({user: "IOT", msg: "Wrong device", ts: new Date(), room: Session.get("roomname")});						
-			} else if (Cmds.indexOf(command[1].toLowerCase()) == -1) {
-				Messages.insert({user: "IOT", msg: "Wrong command", ts: new Date(), room: Session.get("roomname")});									
+			if (command[0].toLowerCase() == "good") {
+				if (Greeting.indexOf(command[1].toLowerCase()) == -1) {
+					Messages.insert({user: "IOT", msg: "Wrong greeting", ts: new Date(), room: Session.get("roomname")});											
+				} else {
+					Messages.insert({user: "IOT", msg: el.value + ", " + Meteor.user().username, ts: new Date(), room: Session.get("roomname")});																
+				}
 			} else {
 				
-				HTTP.post( 'http://jsonplaceholder.typicode.com/posts', { data: { "device": command[0], "command": command[1]} }, function(error, response) {
-					if ( error ) {
-						console.log( error );
-					} else {
-						console.log( response );
+				if (Leds.indexOf(command[0].toLowerCase()) == -1) {
+					Messages.insert({user: "IOT", msg: "Wrong device", ts: new Date(), room: Session.get("roomname")});						
+				} else if (Cmds.indexOf(command[1].toLowerCase()) == -1) {
+					Messages.insert({user: "IOT", msg: "Wrong command", ts: new Date(), room: Session.get("roomname")});									
+				} else {
+					
+					HTTP.post( 'http://192.168.2.2:3000', { data: { "device": command[0], "command": command[1]} }, function(error, response) {
+						if ( error ) {
+							console.log( error );
+						} else {
+							console.log( response );
 
-						if (command[1].toLowerCase() == "status") {
-							Messages.insert({user: "IOT", msg: response.content, ts: new Date(), room: Session.get("roomname")});			
-						}
-			
-					}
-				} );
+							//if (command[1].toLowerCase() == "status") {
+								Messages.insert({user: "IOT", msg: response.content, ts: new Date(), room: Session.get("roomname")});			
+							//}
 				
-			}
+						}
+					} );
+					
+				}
+
+			};
+			
 		} else {
 				Messages.insert({user: "IOT", msg: "Wrong format", ts: new Date(), room: Session.get("roomname")});									
 		}
@@ -122,15 +134,11 @@ if (Meteor.isServer) {
     }
   });
   Messages.deny({
-    insert: function (userId, doc) {
-      return (userId === null);
-    },
+    insert: function (userId, doc) { return (userId === null); },
     update: function (userId, doc, fieldNames, modifier) {
       return true;
     },
-    remove: function (userId, doc) {
-      return true;
-    }
+    remove: function (userId, doc) { return true; }
   });
   Messages.allow({
     insert: function (userId, doc) {
