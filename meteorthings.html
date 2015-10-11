@@ -11,7 +11,7 @@
 
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
-                <a class="brand" href="#">MeteorThings</a>
+								<img class="madewith pull-left" src="meteorthings.png" alt="">
                 <ul class="nav pull-right">
                     <li><a href="http://www.meteor.com" target="_blank">Meteor release {{release}}</a></li>
                     <li><a>{{> loginButtons align="right"}}</a></li>
@@ -44,7 +44,7 @@
 </template>
 
 <template name="input">
-    <input type="text" id="msg" placeholder="Your command goes here..." style="width: 50%; margin-bottom: 0px">
+    <input type="text" id="msg" placeholder="Your command goes here..." class="span10" style="margin-bottom: 0px">
     <input type="button" value="Send command" class="btn btn-primary sendMsg">
 </template>
 

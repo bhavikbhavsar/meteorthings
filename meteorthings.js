@@ -35,16 +35,16 @@ if (Meteor.isClient) {
 		if (command.length == 2) {			
 			if (command[0].toLowerCase() == "good") {
 				if (Greeting.indexOf(command[1].toLowerCase()) == -1) {
-					Messages.insert({user: "IOT", msg: "Wrong greeting", ts: new Date(), room: Session.get("roomname")});											
+					Messages.insert({user: "Meteorthings", msg: "Wrong greeting", ts: new Date(), room: Session.get("roomname")});											
 				} else {
-					Messages.insert({user: "IOT", msg: el.value + ", " + Meteor.user().username, ts: new Date(), room: Session.get("roomname")});																
+					Messages.insert({user: "Meteorthings", msg: el.value + ", " + Meteor.user().username, ts: new Date(), room: Session.get("roomname")});																
 				}
 			} else {
 				
 				if (Leds.indexOf(command[0].toLowerCase()) == -1) {
-					Messages.insert({user: "IOT", msg: "Wrong device", ts: new Date(), room: Session.get("roomname")});						
+					Messages.insert({user: "Meteorthings", msg: "Wrong device", ts: new Date(), room: Session.get("roomname")});						
 				} else if (Cmds.indexOf(command[1].toLowerCase()) == -1) {
-					Messages.insert({user: "IOT", msg: "Wrong command", ts: new Date(), room: Session.get("roomname")});									
+					Messages.insert({user: "Meteorthings", msg: "Wrong command", ts: new Date(), room: Session.get("roomname")});									
 				} else {
 					
 					HTTP.post( 'http://192.168.2.2:3000', { data: { "device": command[0], "command": command[1]} }, function(error, response) {
@@ -54,7 +54,7 @@ if (Meteor.isClient) {
 							console.log( response );
 
 							//if (command[1].toLowerCase() == "status") {
-								Messages.insert({user: "IOT", msg: response.content, ts: new Date(), room: Session.get("roomname")});			
+								Messages.insert({user: "Meteorthings", msg: response.content, ts: new Date(), room: Session.get("roomname")});			
 							//}
 				
 						}
@@ -65,7 +65,7 @@ if (Meteor.isClient) {
 			};
 			
 		} else {
-				Messages.insert({user: "IOT", msg: "Wrong format", ts: new Date(), room: Session.get("roomname")});									
+				Messages.insert({user: "Meteorthings", msg: "I don't understand", ts: new Date(), room: Session.get("roomname")});									
 		}
     el.value = "";
     el.focus();
