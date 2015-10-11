@@ -12,7 +12,7 @@ if (Meteor.isClient) {
 
   Meteor.subscribe("rooms");
   Meteor.subscribe("messages");
-  Session.setDefault("roomname", "Kelantan");
+  Session.setDefault("roomname", "Living Room");
 
   Template.input.events({
     'click .sendMsg': function(e) {
@@ -116,7 +116,7 @@ if (Meteor.isServer) {
     Messages.remove({});
     Rooms.remove({});
     if (Rooms.find().count() === 0) {
-      ["Kelantan", "Perak", "Selangor", "Sarawak", "Sabah"].forEach(function(r) {
+      ["Living Room", "Kitchen", "Master Bedroom", "Guest Room", "Store Room"].forEach(function(r) {
         Rooms.insert({roomname: r});
       });
     }
